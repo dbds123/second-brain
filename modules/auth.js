@@ -6,7 +6,7 @@ const Auth = (() => {
 
   const GMAIL_CLIENT_ID = '820791360039-hrugig7qhl75kjl9usgs6ie8u10ghhpb.apps.googleusercontent.com';
 
-  // ── Config (Client IDs) ──────────────────────────────────────────────────
+  // ── Config ───────────────────────────────────────────────────────────────────
   function getConfig() {
     const base = { gmailClientId: GMAIL_CLIENT_ID };
     try { return Object.assign(base, JSON.parse(localStorage.getItem(CONFIG_KEY) || '{}')); }
@@ -19,7 +19,7 @@ const Auth = (() => {
     localStorage.setItem(CONFIG_KEY, JSON.stringify(c));
   }
 
-  // ── Token Storage ────────────────────────────────────────────────────────
+  // ── Token Storage ────────────────────────────────────────────────────────────
   function allTokens() {
     try { return JSON.parse(localStorage.getItem(TOKEN_KEY) || '{}'); }
     catch { return {}; }
@@ -46,12 +46,14 @@ const Auth = (() => {
 
   function isConnected(provider) { return !!getToken(provider); }
 
-  // ── OAuth Callback (Token aus URL-Hash lesen nach Redirect) ──────────────
+  // ── OAuth Callback ───────────────────────────────────────────────────────────
+  // Wird aufgerufen wenn die Seite nach OAuth-Redirect geladen wird.
+  // Läuft sowohl im Popup als auch im Hauptfenster.
   function handleCallback() {
     const hash = window.location.hash;
     if (!hash || !hash.includes('access_token')) return null;
 
-    const params = new URLSearchParams(hash.replace(/^#/, ''));
+    const params    = new URLSearchParams(hash.replace(/^#/, ''));
     const token     = params.get('access_token');
     const state     = params.get('state');
     const expiresIn = parseInt(params.get('expires_in') || '3600', 10);
@@ -59,12 +61,19 @@ const Auth = (() => {
     if (token && state) {
       saveToken(state, token, expiresIn);
       history.replaceState(null, '', window.location.pathname);
+
+      // Im Popup: Hauptfenster aktualisieren und Popup schließen
+      if (window.opener && !window.opener.closed) {
+        try { window.opener.Mail.init(); } catch (_) {}
+        window.close();
+      }
+
       return state;
     }
     return null;
   }
 
-  // ── Gmail OAuth Redirect ─────────────────────────────────────────────────
+  // ── Gmail OAuth — öffnet Popup statt Redirect ────────────────────────────────
   function connectGmail() {
     const clientId = getConfig().gmailClientId?.trim() || GMAIL_CLIENT_ID;
 
@@ -74,9 +83,27 @@ const Auth = (() => {
       response_type: 'token',
       scope:         'https://www.googleapis.com/auth/gmail.readonly',
       state:         'gmail',
-      prompt:        'select_account'
+      prompt:        'select_account',
     });
-    window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params}`;
+
+    const url    = `https://accounts.google.com/o/oauth2/v2/auth?${params}`;
+    const popup  = window.open(url, 'gmail-auth', 'width=520,height=640,left=200,top=80');
+
+    // Fallback: wenn Popup geblockt → normaler Redirect
+    if (!popup || popup.closed) {
+      window.location.href = url;
+      return;
+    }
+
+    // Polling — nach Popup-Close Mail neu laden falls Token gespeichert wurde
+    const poll = setInterval(() => {
+      try {
+        if (popup.closed) {
+          clearInterval(poll);
+          if (isConnected('gmail')) Mail.init();
+        }
+      } catch (_) { clearInterval(poll); }
+    }, 500);
   }
 
   return { handleCallback, connectGmail, getToken, disconnect, isConnected, getConfig, setConfig };

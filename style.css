@@ -282,6 +282,7 @@ h1 strong { font-weight: 500; font-style: italic; color: var(--muted); }
   display: grid;
   grid-template-columns: auto 1fr auto;
   gap: 14px; padding: 13px 22px;
+  text-decoration: none; color: inherit;
   border-bottom: 1px solid var(--border);
   cursor: pointer; align-items: start;
   transition: background 0.2s, opacity 0.35s ease, max-height 0.4s ease,

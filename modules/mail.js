@@ -24,17 +24,12 @@ const Mail = (() => {
   }
 
   // ── Gmail API ────────────────────────────────────────────────────────────────
-  const RAUSCH_LABELS = new Set([
-    'CATEGORY_PROMOTIONS', 'CATEGORY_SOCIAL',
-    'CATEGORY_FORUMS', 'CATEGORY_UPDATES',
-  ]);
-
   async function fetchGmailMessages(token) {
     const base    = 'https://gmail.googleapis.com/gmail/v1/users/me';
     const headers = { Authorization: `Bearer ${token}` };
 
     const listRes = await fetch(
-      `${base}/messages?maxResults=30&labelIds=INBOX`, { headers }
+      `${base}/messages?maxResults=40&labelIds=INBOX`, { headers }
     );
     if (!listRes.ok) throw new Error(`Gmail: ${listRes.status}`);
     const listData = await listRes.json();
@@ -50,11 +45,12 @@ const Mail = (() => {
       const d      = await r.json();
       const get    = name => (d.payload?.headers || []).find(h => h.name === name)?.value || '';
       const labels = d.labelIds || [];
+      const gelesen = !labels.includes('UNREAD');
+      const wichtig = labels.includes('IMPORTANT');
+      // Rausch = gelesen UND nicht wichtig → standardmäßig versteckt
+      const rausch  = gelesen && !wichtig;
       const fromRaw = get('From');
       const m = fromRaw.match(/^"?([^"<]+?)"?\s*(?:<.*>)?$/);
-      const gelesen  = !labels.includes('UNREAD');
-      const wichtig  = labels.includes('IMPORTANT');
-      const rausch   = gelesen && !wichtig && labels.some(l => RAUSCH_LABELS.has(l));
       return {
         id,
         absender: m ? m[1].trim() : fromRaw,
@@ -65,7 +61,7 @@ const Mail = (() => {
       };
     }));
 
-    return mails.filter(Boolean).slice(0, 20);
+    return mails.filter(Boolean).slice(0, 25);
   }
 
   // ── RWTH Mail (lokale Bridge) ─────────────────────────────────────────────────
@@ -85,24 +81,24 @@ const Mail = (() => {
     if (data.error) throw new Error(data.error);
     return (data.mails || []).map(m => ({
       ...m,
-      rausch: false,
+      rausch: m.gelesen && !m.wichtig,
       href:   'https://mail.rwth-aachen.de/',
     }));
   }
 
-  // ── Mail-Item HTML ───────────────────────────────────────────────────────────
+  // ── Mail-Item HTML (<a> für nativen Klick ohne Popup-Blocker) ────────────────
   function mailItemHTML(m) {
     const flagClass = m.wichtig ? 'flag-warn' : (m.gelesen ? 'flag-ok' : 'flag-neu');
     return `
-      <div class="mail-item${m.gelesen ? '' : ' ungelesen'}${m.rausch ? ' mail-item--rausch' : ''}"
-           data-href="${escHtml(m.href)}">
+      <a class="mail-item${m.gelesen ? '' : ' ungelesen'}${m.rausch ? ' mail-item--rausch' : ''}"
+         href="${escHtml(m.href)}" target="_blank" rel="noopener">
         <div class="mail-flag ${flagClass}"></div>
         <div class="mail-body">
           <div class="mail-sender${m.gelesen ? ' read' : ''}">${escHtml(m.absender)}</div>
           <div class="mail-subject">${escHtml(m.betreff)}</div>
         </div>
         <div class="mail-zeit">${m.zeit}</div>
-      </div>`;
+      </a>`;
   }
 
   // ── Konto-Karte ───────────────────────────────────────────────────────────────
@@ -123,10 +119,10 @@ const Mail = (() => {
         </div>`;
     }
 
-    const ungelesen  = mails.filter(m => !m.gelesen).length;
-    const wichtig    = mails.filter(m => m.wichtig).length;
-    const rauschAnt  = mails.filter(m => m.rausch).length;
-    const sichtbar   = mails.length - rauschAnt;
+    const ungelesen = mails.filter(m => !m.gelesen).length;
+    const wichtig   = mails.filter(m => m.wichtig).length;
+    const rauschAnt = mails.filter(m => m.rausch).length;
+    const sichtbar  = mails.length - rauschAnt;
 
     const toggleBtn = rauschAnt > 0
       ? `<span class="row-action mail-toggle" data-list="${listId}" data-count="${rauschAnt}">${rauschAnt} weitere ↓</span>`
@@ -161,7 +157,7 @@ const Mail = (() => {
       </div>`;
   }
 
-  // ── Gmail Connect-Panel ───────────────────────────────────────────────────────
+  // ── Gmail Connect-Banner ──────────────────────────────────────────────────────
   function connectPanelHTML() {
     return `
       <div class="gmail-connect-banner">
@@ -169,7 +165,7 @@ const Mail = (() => {
           <div class="mail-badge" style="background:rgba(234,67,53,0.12);border:1px solid rgba(234,67,53,0.3);color:#ff7060">G</div>
           <div>
             <div class="gmail-connect-title">Gmail verbinden</div>
-            <div class="gmail-connect-sub">Klicke um dein Google-Konto zu autorisieren</div>
+            <div class="gmail-connect-sub">Einmalig autorisieren — Token wird gespeichert</div>
           </div>
         </div>
         <button class="connect-btn primary" id="btn-gmail-connect">Mit Gmail verbinden →</button>
@@ -198,31 +194,22 @@ const Mail = (() => {
           <div class="mail-offline-icon">◌</div>
           <div>
             <div class="mail-offline-title">Bridge nicht aktiv</div>
-            <div class="mail-offline-sub">Starte <code>python rwth_mail.py</code> im second-brain Ordner um RWTH-Mails zu laden.</div>
+            <div class="mail-offline-sub">Starte <code>python rwth_mail.py</code> im second-brain Ordner.</div>
           </div>
         </div>
       </div>`;
   }
 
-  // ── Event-Binding (Toggle + Mail-Klick) ─────────────────────────────────────
+  // ── Toggle-Events ─────────────────────────────────────────────────────────────
   function bindGrid(grid) {
     grid.addEventListener('click', e => {
-      // Toggle-Button
       const toggle = e.target.closest('.mail-toggle');
-      if (toggle) {
-        const list     = document.getElementById(toggle.dataset.list);
-        const expanded = list.classList.toggle('mail-list--expanded');
-        toggle.textContent = expanded
-          ? 'Weniger ↑'
-          : `${toggle.dataset.count} weitere ↓`;
-        return;
-      }
-
-      // Mail anklicken → öffnen
-      const item = e.target.closest('.mail-item');
-      if (item?.dataset.href) {
-        window.open(item.dataset.href, '_blank');
-      }
+      if (!toggle) return;
+      const list     = document.getElementById(toggle.dataset.list);
+      const expanded = list.classList.toggle('mail-list--expanded');
+      toggle.textContent = expanded
+        ? 'Weniger ↑'
+        : `${toggle.dataset.count} weitere ↓`;
     });
   }
 
@@ -245,13 +232,13 @@ const Mail = (() => {
     ]);
 
     const bridgeOnline = rwthOnline.status === 'fulfilled' && rwthOnline.value;
-    const [rwthRes] = await Promise.allSettled([
+    const [rwthRes]    = await Promise.allSettled([
       bridgeOnline ? fetchRwthMessages() : Promise.resolve(null),
     ]);
 
-    let cards = '';
     const gBadge = 'style="background:rgba(234,67,53,0.12);border:1px solid rgba(234,67,53,0.3);color:#ff7060"';
     const mBadge = 'style="background:rgba(0,84,159,0.15);border:1px solid rgba(0,84,159,0.3);color:#5b9be0"';
+    let cards = '';
 
     if (gOk) {
       cards += gmailRes.status === 'fulfilled' && gmailRes.value
