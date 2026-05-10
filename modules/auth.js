@@ -1,13 +1,16 @@
-// Auth — OAuth Token-Management für Gmail + Microsoft Graph
+// Auth — OAuth Token-Management für Gmail
 
 const Auth = (() => {
   const TOKEN_KEY  = 'sb_tokens';
   const CONFIG_KEY = 'sb_config';
 
+  const GMAIL_CLIENT_ID = '820791360039-hrugig7qhl75kjl9usgs6ie8u10ghhpb.apps.googleusercontent.com';
+
   // ── Config (Client IDs) ──────────────────────────────────────────────────
   function getConfig() {
-    try { return JSON.parse(localStorage.getItem(CONFIG_KEY) || '{}'); }
-    catch { return {}; }
+    const base = { gmailClientId: GMAIL_CLIENT_ID };
+    try { return Object.assign(base, JSON.parse(localStorage.getItem(CONFIG_KEY) || '{}')); }
+    catch { return base; }
   }
 
   function setConfig(key, value) {
@@ -56,19 +59,18 @@ const Auth = (() => {
     if (token && state) {
       saveToken(state, token, expiresIn);
       history.replaceState(null, '', window.location.pathname);
-      return state; // 'gmail' oder 'microsoft'
+      return state;
     }
     return null;
   }
 
   // ── Gmail OAuth Redirect ─────────────────────────────────────────────────
   function connectGmail() {
-    const clientId = getConfig().gmailClientId?.trim();
-    if (!clientId) { alert('Bitte zuerst die Gmail Client ID eintragen.'); return; }
+    const clientId = getConfig().gmailClientId?.trim() || GMAIL_CLIENT_ID;
 
     const params = new URLSearchParams({
       client_id:     clientId,
-      redirect_uri:  window.location.origin + '/',
+      redirect_uri:  window.location.origin + window.location.pathname,
       response_type: 'token',
       scope:         'https://www.googleapis.com/auth/gmail.readonly',
       state:         'gmail',
@@ -77,22 +79,5 @@ const Auth = (() => {
     window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params}`;
   }
 
-  // ── Microsoft OAuth Redirect (Implicit, benötigt Azure App-Config) ───────
-  function connectMicrosoft() {
-    const clientId = getConfig().msClientId?.trim();
-    if (!clientId) { alert('Bitte zuerst die Microsoft Client ID eintragen.'); return; }
-
-    const params = new URLSearchParams({
-      client_id:     clientId,
-      redirect_uri:  window.location.origin + '/',
-      response_type: 'token',
-      scope:         'https://graph.microsoft.com/Mail.Read',
-      state:         'microsoft',
-      response_mode: 'fragment',
-      prompt:        'select_account'
-    });
-    window.location.href = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?${params}`;
-  }
-
-  return { handleCallback, connectGmail, connectMicrosoft, getToken, disconnect, isConnected, getConfig, setConfig };
+  return { handleCallback, connectGmail, getToken, disconnect, isConnected, getConfig, setConfig };
 })();

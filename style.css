@@ -667,6 +667,19 @@ select.ef-input option { background: #111116; }
 .error-text { color: var(--bad); }
 .mail-stat-val.important { color: var(--warn); }
 
+/* ── Gmail Connect Banner ── */
+.gmail-connect-banner {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 14px;
+}
+.gmail-connect-info { display: flex; align-items: center; gap: 12px; }
+.gmail-connect-title { font-size: 0.88rem; color: var(--ink); font-weight: 400; margin-bottom: 2px; }
+.gmail-connect-sub   { font-size: 0.72rem; color: var(--muted); }
+
 /* ── MAIL Connect Panel ── */
 .mail-connect-panel {
   display: grid;

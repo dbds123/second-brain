@@ -1,4 +1,4 @@
-// Mail — Gmail + Microsoft Graph Integration
+// Mail — Gmail + RWTH Bridge Integration
 
 const Mail = (() => {
 
@@ -24,12 +24,19 @@ const Mail = (() => {
   }
 
   // ── Gmail API ────────────────────────────────────────────────────────────────
+  // Labels die auf unwichtige Mails hinweisen
+  const RAUSCH_LABELS = new Set([
+    'CATEGORY_PROMOTIONS', 'CATEGORY_SOCIAL',
+    'CATEGORY_FORUMS', 'CATEGORY_UPDATES',
+  ]);
+
   async function fetchGmailMessages(token) {
     const base    = 'https://gmail.googleapis.com/gmail/v1/users/me';
     const headers = { Authorization: `Bearer ${token}` };
 
+    // Mehr laden damit nach Filterung genug übrig bleibt
     const listRes = await fetch(
-      `${base}/messages?maxResults=12&labelIds=INBOX`, { headers }
+      `${base}/messages?maxResults=30&labelIds=INBOX`, { headers }
     );
     if (!listRes.ok) throw new Error(`Gmail: ${listRes.status}`);
     const listData = await listRes.json();
@@ -44,6 +51,7 @@ const Mail = (() => {
       if (!r.ok) return null;
       const d   = await r.json();
       const get = name => (d.payload?.headers || []).find(h => h.name === name)?.value || '';
+      const labels  = d.labelIds || [];
       const fromRaw = get('From');
       const m       = fromRaw.match(/^"?([^"<]+?)"?\s*(?:<.*>)?$/);
       return {
@@ -51,12 +59,23 @@ const Mail = (() => {
         absender: m ? m[1].trim() : fromRaw,
         betreff:  get('Subject') || '(kein Betreff)',
         zeit:     zeitFormatieren(parseInt(d.internalDate, 10)),
-        gelesen:  !(d.labelIds || []).includes('UNREAD'),
-        wichtig:  (d.labelIds || []).includes('IMPORTANT'),
+        gelesen:  !labels.includes('UNREAD'),
+        wichtig:  labels.includes('IMPORTANT'),
+        labels,
       };
     }));
 
-    return mails.filter(Boolean);
+    const alle = mails.filter(Boolean);
+
+    // Filter: raus wenn Rausch-Kategorie UND bereits gelesen
+    // Wichtige oder ungelesene bleiben immer
+    const gefiltert = alle.filter(m => {
+      const istRausch = m.labels.some(l => RAUSCH_LABELS.has(l));
+      if (istRausch && m.gelesen && !m.wichtig) return false;
+      return true;
+    });
+
+    return gefiltert.slice(0, 12);
   }
 
   // ── RWTH Mail (lokale Bridge) ─────────────────────────────────────────────────
@@ -135,107 +154,30 @@ const Mail = (() => {
         </div>
         <div class="mail-list">${mails.map(mailItemHTML).join('')}</div>
         <div class="row-foot">
-          <span>${mails.length} Nachrichten geladen</span>
+          <span>${mails.length} Nachrichten</span>
           <span class="row-action">Aktualisieren →</span>
         </div>
       </div>`;
   }
 
-  // ── Connect-Panel ─────────────────────────────────────────────────────────────
+  // ── Gmail Connect-Panel ───────────────────────────────────────────────────────
   function connectPanelHTML() {
-    const cfg = Auth.getConfig();
-    const gOk = Auth.isConnected('gmail');
-    const mOk = Auth.isConnected('microsoft');
-
     return `
-      <div class="mail-connect-panel">
-
-        <div class="connect-card${gOk ? ' connected' : ''}">
-          <div class="connect-card-head">
-            <div class="connect-provider">
-              <div class="mail-badge" style="width:28px;height:28px;font-size:12px">G</div>
-              <span class="connect-provider-label">Gmail</span>
-            </div>
-            <span class="connect-status-dot ${gOk ? 'ok' : 'off'}">
-              ${gOk ? '● Verbunden' : '○ Getrennt'}
-            </span>
+      <div class="gmail-connect-banner">
+        <div class="gmail-connect-info">
+          <div class="mail-badge" style="flex-shrink:0">G</div>
+          <div>
+            <div class="gmail-connect-title">Gmail verbinden</div>
+            <div class="gmail-connect-sub">Klicke um dein Google-Konto zu autorisieren</div>
           </div>
-          ${gOk
-            ? `<button class="connect-btn danger" id="btn-gmail-disconnect">Verbindung trennen</button>`
-            : `<div class="connect-input-row">
-                 <input class="connect-input" id="input-gmail-id" type="text"
-                   placeholder="Google OAuth Client ID (aus Google Cloud Console)"
-                   value="${escHtml(cfg.gmailClientId || '')}">
-               </div>
-               <div class="connect-actions">
-                 <button class="connect-btn secondary" id="btn-gmail-save">ID speichern</button>
-                 <button class="connect-btn primary" id="btn-gmail-connect">Mit Gmail verbinden →</button>
-               </div>`
-          }
         </div>
-
-        <div class="connect-card${mOk ? ' connected' : ''}">
-          <div class="connect-card-head">
-            <div class="connect-provider">
-              <div class="mail-badge" style="width:28px;height:28px;font-size:12px;background:rgba(0,120,212,0.3)">M</div>
-              <span class="connect-provider-label">RWTH Mail (Microsoft 365)</span>
-            </div>
-            <span class="connect-status-dot ${mOk ? 'ok' : 'off'}">
-              ${mOk ? '● Verbunden' : '○ Getrennt'}
-            </span>
-          </div>
-          ${mOk
-            ? `<button class="connect-btn danger" id="btn-ms-disconnect">Verbindung trennen</button>`
-            : `<div class="connect-input-row">
-                 <input class="connect-input" id="input-ms-id" type="text"
-                   placeholder="Azure App (Client) ID"
-                   value="${escHtml(cfg.msClientId || '')}">
-               </div>
-               <div class="connect-actions">
-                 <button class="connect-btn secondary" id="btn-ms-save">ID speichern</button>
-                 <button class="connect-btn primary" id="btn-ms-connect">Mit RWTH verbinden →</button>
-               </div>`
-          }
-        </div>
-
+        <button class="connect-btn primary" id="btn-gmail-connect">Mit Gmail verbinden →</button>
       </div>`;
   }
 
-  // ── Connect-Panel Events ──────────────────────────────────────────────────────
   function bindConnectPanel(container) {
-    const q = id => container.querySelector(id);
-
-    q('#btn-gmail-save')?.addEventListener('click', () => {
-      const v = q('#input-gmail-id')?.value?.trim();
-      if (v) Auth.setConfig('gmailClientId', v);
-    });
-
-    q('#btn-gmail-connect')?.addEventListener('click', () => {
-      const v = q('#input-gmail-id')?.value?.trim();
-      if (v) Auth.setConfig('gmailClientId', v);
-      Auth.connectGmail();
-    });
-
-    q('#btn-gmail-disconnect')?.addEventListener('click', () => {
-      Auth.disconnect('gmail');
-      init();
-    });
-
-    q('#btn-ms-save')?.addEventListener('click', () => {
-      const v = q('#input-ms-id')?.value?.trim();
-      if (v) Auth.setConfig('msClientId', v);
-    });
-
-    q('#btn-ms-connect')?.addEventListener('click', () => {
-      const v = q('#input-ms-id')?.value?.trim();
-      if (v) Auth.setConfig('msClientId', v);
-      Auth.connectMicrosoft();
-    });
-
-    q('#btn-ms-disconnect')?.addEventListener('click', () => {
-      Auth.disconnect('microsoft');
-      init();
-    });
+    container.querySelector('#btn-gmail-connect')
+      ?.addEventListener('click', () => Auth.connectGmail());
   }
 
   // ── RWTH Offline-Karte ────────────────────────────────────────────────────────
@@ -265,7 +207,6 @@ const Mail = (() => {
   async function render(container) {
     const gOk = Auth.isConnected('gmail');
 
-    // Settings-Panel wenn Gmail nicht verbunden
     let html = !gOk ? connectPanelHTML() : '';
     html += '<div class="mail-grid" id="mail-grid"></div>';
     container.innerHTML = html;
@@ -294,7 +235,6 @@ const Mail = (() => {
         : kontoKarteHTML('Gmail', 'G', [], gmailRes.reason?.message || 'Fehler');
     }
 
-    // RWTH — immer anzeigen, entweder Mails oder Offline-Hinweis
     if (bridgeOnline && rwthRes.status === 'fulfilled' && rwthRes.value) {
       cards += kontoKarteHTML('RWTH Mail', 'M', rwthRes.value, null);
     } else if (bridgeOnline) {
@@ -305,13 +245,10 @@ const Mail = (() => {
 
     grid.innerHTML = cards;
 
-    // Sync-Meta
     const meta = document.getElementById('mail-sync-meta');
     if (meta) {
-      const count = [gOk, true].filter(Boolean).length;
       const now = new Date();
-      meta.textContent = `${count} Konten · `
-        + `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+      meta.textContent = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')} · ${gOk ? 'Gmail ✓' : 'Gmail —'} · RWTH ${bridgeOnline ? '✓' : '—'}`;
     }
   }
 
