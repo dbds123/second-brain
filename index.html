@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Second Brain</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100;200;300;400;500;600;700&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- JARVIS -->
+<div class="jarvis-bg">
+  <canvas id="jarvisCanvas"></canvas>
+</div>
+
+<!-- Floating Nav -->
+<nav id="main-nav">
+  <a class="nav-link active" data-target="hero">Übersicht</a>
+  <a class="nav-link" data-target="mails">Mails</a>
+  <a class="nav-link" data-target="academics">Academics</a>
+  <a class="nav-link" data-target="athletics">Athletics</a>
+  <a class="nav-link" data-target="insights">Insights</a>
+</nav>
+
+<!-- Hero -->
+<section class="hero" id="hero">
+  <div class="pill">
+    <div class="pill-dot"></div>
+    <span id="live-status">System aktiv · Lädt...</span>
+  </div>
+  <div class="hero-greeting" id="hero-greeting">Guten Tag</div>
+  <h1 id="hero-title">Was zählt<br><strong>gerade?</strong></h1>
+  <p class="hero-sub" id="hero-sub">Lädt...</p>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    Scroll
+  </div>
+</section>
+
+<!-- Content -->
+<div class="content">
+
+  <!-- § 01 Mails -->
+  <section class="section-wrap" id="mails">
+    <div class="section-head">
+      <div>
+        <div class="section-eyebrow">— § 01 / Posteingänge</div>
+        <h2 class="section-title">Was kam rein,<br><strong>während ich gearbeitet habe.</strong></h2>
+      </div>
+      <div class="section-meta" id="mail-sync-meta">2 Konten</div>
+    </div>
+    <div id="mails-container"></div>
+  </section>
+
+  <!-- § 02 Academics -->
+  <section class="section-wrap" id="academics">
+    <div class="section-head">
+      <div>
+        <div class="section-eyebrow">— § 02 / Academics</div>
+        <h2 class="section-title">Master — <strong>1. Semester.</strong></h2>
+      </div>
+      <div class="section-meta">SS 26 · Mathematik M.Sc. · RWTH Aachen</div>
+    </div>
+    <div id="academics-container"></div>
+  </section>
+
+  <!-- § 03 Athletics -->
+  <section class="section-wrap" id="athletics">
+    <div class="section-head">
+      <div>
+        <div class="section-eyebrow">— § 03 / Athletics</div>
+        <h2 class="section-title" id="ath-block-title">Training — <strong>Diese Woche.</strong></h2>
+      </div>
+      <div class="section-meta" id="ath-block-meta">Push / Pull / Legs</div>
+    </div>
+    <div id="athletics-container"></div>
+  </section>
+
+  <!-- § 04 Insights -->
+  <section class="section-wrap" id="insights">
+    <div class="section-head">
+      <div>
+        <div class="section-eyebrow">— § 04 / Insights</div>
+        <h2 class="section-title">Wheel of Life — <strong id="insights-month">Mai 2026.</strong></h2>
+      </div>
+      <div class="section-meta">8 Lebensbereiche · monatliches Rating</div>
+    </div>
+    <div id="insights-container"></div>
+  </section>
+
+</div>
+
+<footer>Second Brain · Personal · v0.1 · Made for one person.</footer>
+
+<script src="data/store.js"></script>
+<script src="modules/jarvis.js"></script>
+<script src="modules/auth.js"></script>
+<script src="modules/mail.js"></script>
+<script src="modules/academics.js"></script>
+<script src="modules/athletics.js"></script>
+<script src="modules/insights.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
