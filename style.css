@@ -658,6 +658,11 @@ select.ef-input option { background: #111116; }
 .flag-ok   { background: var(--muted2); }
 .flag-warn { background: var(--warn); box-shadow: 0 0 8px rgba(245,166,35,0.5); }
 .mail-skeleton { padding: 28px 22px; font-family: 'Geist Mono', monospace; font-size: 0.7rem; color: var(--muted); text-align: center; }
+.mail-offline-msg { display: flex; align-items: flex-start; gap: 14px; padding: 20px 22px; }
+.mail-offline-icon { font-size: 1.4rem; color: var(--muted2); flex-shrink: 0; margin-top: 2px; }
+.mail-offline-title { font-size: 0.84rem; color: var(--ink2); margin-bottom: 6px; font-weight: 400; }
+.mail-offline-sub { font-size: 0.72rem; color: var(--muted); line-height: 1.5; }
+.mail-offline-sub code { font-family: 'Geist Mono', monospace; background: rgba(255,255,255,0.06); padding: 1px 5px; border-radius: 4px; }
 .mail-error-msg { padding: 14px 22px; font-size: 0.78rem; color: var(--bad); font-family: 'Geist Mono', monospace; }
 .error-text { color: var(--bad); }
 .mail-stat-val.important { color: var(--warn); }

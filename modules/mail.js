@@ -59,23 +59,22 @@ const Mail = (() => {
     return mails.filter(Boolean);
   }
 
-  // ── Microsoft Graph API ──────────────────────────────────────────────────────
-  async function fetchMicrosoftMessages(token) {
-    const url = 'https://graph.microsoft.com/v1.0/me/mailFolders/Inbox/messages'
-      + '?$top=12&$select=from,subject,receivedDateTime,isRead,importance'
-      + '&$orderby=receivedDateTime desc';
-    const r = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-    if (!r.ok) throw new Error(`Microsoft Graph: ${r.status}`);
-    const data = await r.json();
+  // ── RWTH Mail (lokale Bridge) ─────────────────────────────────────────────────
+  const RWTH_BRIDGE = 'http://localhost:3334';
 
-    return (data.value || []).map(m => ({
-      id:       m.id,
-      absender: m.from?.emailAddress?.name || m.from?.emailAddress?.address || '?',
-      betreff:  m.subject || '(kein Betreff)',
-      zeit:     zeitFormatieren(m.receivedDateTime),
-      gelesen:  m.isRead,
-      wichtig:  m.importance === 'high',
-    }));
+  async function rwthBridgeOnline() {
+    try {
+      const r = await fetch(`${RWTH_BRIDGE}/ping`, { signal: AbortSignal.timeout(800) });
+      return r.ok;
+    } catch { return false; }
+  }
+
+  async function fetchRwthMessages() {
+    const r = await fetch(`${RWTH_BRIDGE}/mails`, { signal: AbortSignal.timeout(3000) });
+    if (!r.ok) throw new Error(`RWTH Bridge: ${r.status}`);
+    const data = await r.json();
+    if (data.error) throw new Error(data.error);
+    return data.mails || [];
   }
 
   // ── Mail-Item HTML ───────────────────────────────────────────────────────────
@@ -239,29 +238,52 @@ const Mail = (() => {
     });
   }
 
+  // ── RWTH Offline-Karte ────────────────────────────────────────────────────────
+  function rwthOfflineKarteHTML() {
+    return `
+      <div class="card mail-account">
+        <div class="mail-head">
+          <div class="mail-head-left">
+            <div class="mail-badge" style="background:rgba(0,84,159,0.15);border:1px solid rgba(0,84,159,0.3);color:#5b9be0">M</div>
+            <div>
+              <div class="mail-name">RWTH Mail</div>
+              <div class="mail-addr">daniel.brand@rwth-aachen.de</div>
+            </div>
+          </div>
+        </div>
+        <div class="mail-offline-msg">
+          <div class="mail-offline-icon">◌</div>
+          <div>
+            <div class="mail-offline-title">Bridge nicht aktiv</div>
+            <div class="mail-offline-sub">Starte <code>python rwth_mail.py</code> im second-brain Ordner um RWTH-Mails zu laden.</div>
+          </div>
+        </div>
+      </div>`;
+  }
+
   // ── Render ────────────────────────────────────────────────────────────────────
   async function render(container) {
     const gOk = Auth.isConnected('gmail');
-    const mOk = Auth.isConnected('microsoft');
 
-    // Settings-Panel immer oben wenn ein Konto fehlt
-    let html = (!gOk || !mOk) ? connectPanelHTML() : '';
+    // Settings-Panel wenn Gmail nicht verbunden
+    let html = !gOk ? connectPanelHTML() : '';
     html += '<div class="mail-grid" id="mail-grid"></div>';
     container.innerHTML = html;
 
-    if (!gOk && !mOk) {
-      bindConnectPanel(container);
-      return;
-    }
-
-    if (!gOk || !mOk) bindConnectPanel(container);
+    if (!gOk) bindConnectPanel(container);
 
     const grid = container.querySelector('#mail-grid');
     grid.innerHTML = '<div class="mail-skeleton">Lade Mails…</div>';
 
-    const [gmailRes, msRes] = await Promise.allSettled([
-      gOk ? fetchGmailMessages(Auth.getToken('gmail'))       : Promise.resolve(null),
-      mOk ? fetchMicrosoftMessages(Auth.getToken('microsoft')): Promise.resolve(null),
+    const [gmailRes, rwthOnline] = await Promise.allSettled([
+      gOk ? fetchGmailMessages(Auth.getToken('gmail')) : Promise.resolve(null),
+      rwthBridgeOnline(),
+    ]);
+
+    const bridgeOnline = rwthOnline.status === 'fulfilled' && rwthOnline.value;
+
+    const [rwthRes] = await Promise.allSettled([
+      bridgeOnline ? fetchRwthMessages() : Promise.resolve(null),
     ]);
 
     let cards = '';
@@ -272,10 +294,13 @@ const Mail = (() => {
         : kontoKarteHTML('Gmail', 'G', [], gmailRes.reason?.message || 'Fehler');
     }
 
-    if (mOk) {
-      cards += msRes.status === 'fulfilled' && msRes.value
-        ? kontoKarteHTML('RWTH Mail', 'M', msRes.value, null)
-        : kontoKarteHTML('RWTH Mail', 'M', [], msRes.reason?.message || 'Fehler');
+    // RWTH — immer anzeigen, entweder Mails oder Offline-Hinweis
+    if (bridgeOnline && rwthRes.status === 'fulfilled' && rwthRes.value) {
+      cards += kontoKarteHTML('RWTH Mail', 'M', rwthRes.value, null);
+    } else if (bridgeOnline) {
+      cards += kontoKarteHTML('RWTH Mail', 'M', [], rwthRes.reason?.message || 'Fehler');
+    } else {
+      cards += rwthOfflineKarteHTML();
     }
 
     grid.innerHTML = cards;
@@ -283,9 +308,9 @@ const Mail = (() => {
     // Sync-Meta
     const meta = document.getElementById('mail-sync-meta');
     if (meta) {
-      const count = [gOk, mOk].filter(Boolean).length;
+      const count = [gOk, true].filter(Boolean).length;
       const now = new Date();
-      meta.textContent = `${count} Kont${count === 1 ? 'o' : 'en'} · `
+      meta.textContent = `${count} Konten · `
         + `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
     }
   }
