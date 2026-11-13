@@ -31,9 +31,10 @@ dur = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=d
 ins = ["-i", vid, "-i", f"{H}/voice.mp3", "-stream_loop", "-1", "-i", f"{H}/music.mp3", "-i", f"{H}/bomba.mp3"]
 fc = []
 # voice with inserted gap
-fc.append(f"[1:a]aresample=44100,asplit=2[va][vb];[va]atrim=0:{cut},asetpts=PTS-STARTPTS[v1];"
-          f"[vb]atrim=start={cut},asetpts=PTS-STARTPTS,adelay={int((cut + GAP) * 1000)}:all=1[v2];"
-          f"[v1][v2]amix=inputs=2:normalize=0,atrim=0:{dur},asplit=2[voice][sc]")
+fc.append(f"[1:a]aresample=44100,aformat=channel_layouts=stereo,asplit=2[va][vb];[va]atrim=0:{cut},asetpts=PTS-STARTPTS[v1];"
+          f"[vb]atrim=start={cut},asetpts=PTS-STARTPTS[v2];"
+          f"anullsrc=r=44100:cl=stereo,atrim=0:{GAP}[vg];"
+          f"[v1][vg][v2]concat=n=3:v=0:a=1,apad,atrim=0:{dur},asplit=2[voice][sc]")
 # music: Hitman from 58 s, muted for the glow-up hit, ducked under voice
 g0, g1 = at(11, 0.0), at(11, 0.0) + 1.5
 fc.append(f"[2:a]atrim=start=58,asetpts=PTS-STARTPTS,aresample=44100,atrim=0:{dur},volume=0.30,"
@@ -47,7 +48,7 @@ for i, (n, line, off, g, mx) in enumerate(EV):
 tb = cut + 0.15
 fc.append(f"[3:a]aresample=44100,atrim=0:0.88,afade=t=out:st=0.84:d=0.04,adelay={int(tb * 1000)}:all=1[bm]"); mix.append("[bm]")
 fc.append(f"sine=f=1000:d=0.45:r=44100,volume=0.3,afade=t=in:d=0.005,afade=t=out:st=0.44:d=0.01,adelay={int((tb + 0.88) * 1000)}:all=1[bp]"); mix.append("[bp]")
-fc.append("".join(mix) + f"amix=inputs={len(mix)}:normalize=0:duration=first,atrim=0:{dur},loudnorm=I=-14:TP=-1.5:LRA=11[a]")
+fc.append("".join(mix) + f"amix=inputs={len(mix)}:normalize=0:duration=longest,atrim=0:{dur},loudnorm=I=-14:TP=-1.5:LRA=11[a]")
 subprocess.run(["ffmpeg", "-y", "-loglevel", "error"] + ins + ["-filter_complex", ";".join(fc), "-map", "0:v", "-map", "[a]",
                 "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-t", str(dur), out], check=True)
 print("ok", out)
