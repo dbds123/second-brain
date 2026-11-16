@@ -542,7 +542,8 @@ class ProcessScanner:
                     pa = parse_blender_args(argv)
                     blend = pa["blend"]
                     title = env.get("PANEL_TITEL") or env.get("PANEL_TITLE") \
-                        or (Path(blend).stem if blend else
+                        or (Path(pa["scripts"][0]).stem if pa["scripts"]
+                            else Path(blend).stem if blend else
                             " ".join(argv[2:])[:80])
                     queue.append({
                         "pid": pid, "title": title, "blend": blend,
@@ -569,10 +570,13 @@ class ProcessScanner:
 
             # --- Claude
             if "claude" in joined.lower():
-                is_claude = exe == "claude" or any(
-                    os.path.basename(a).lower() in ("claude", "cli.js",
-                                                    "claude.js")
-                    and "claude" in a.lower() for a in argv[:3])
+                # Programm heißt "claude" oder liegt unter
+                # ~/.local/share/claude/versions/<nummer>
+                is_claude = exe == "claude" or \
+                    any("/claude/versions/" in a for a in argv[:2]) or any(
+                        os.path.basename(a).lower() in ("claude", "cli.js",
+                                                        "claude.js")
+                        and "claude" in a.lower() for a in argv[:3])
                 if not is_claude:
                     continue
                 if "--session-id" in argv or any(a.startswith("--session-id=")
@@ -607,7 +611,7 @@ class ProcessScanner:
                             cap = _int(argv[i + 1])
                         elif a.startswith("--capacity="):
                             cap = _int(a.split("=", 1)[1])
-                    daemons.append({"pid": pid, "capacity": cap or 4,
+                    daemons.append({"pid": pid, "capacity": cap or 1,
                                     "started": st["start"],
                                     "rss": st["rss"]})
 
