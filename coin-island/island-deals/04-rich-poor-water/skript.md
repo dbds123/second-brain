@@ -1,135 +1,93 @@
-# 04 – Rich Pelican vs Poor Octopus: Buying Water
+# 04 – One Glass of Water (v2, 2026-11-18)
 
-Format: Island Deals (versus variant) · seamless loop · narrator "Titan" (deep, punchy) · one-word captions
-Cast: Baron Goldbelly, Squid, Rico (as hired butler: bow tie, white gloves).
-Trend tie-in: "dupe" culture (the cheap coconut is labelled the dupe; the twist is that the luxury water is the dupe).
+**v2 replaces v1 (skript-v1.md).** Reason: Daniel called the story of short 01 trash. New rule for all Island Deals: ONE buyer, ONE object, ONE simple rule, three escalations, one punishment, loop. Anyone must get the story with the sound off.
+
+Format: Island Deals · seamless loop · narrator "Titan" (deep, punchy, excited) · one-word captions
+Cast: Baron Goldbelly (buyer), Squid (seller). Crabs as background extras. No butler, no split screen, no RICH/POOR labels.
+The one rule of this short: **the more it costs, the more the Baron wants it.**
 
 ## Titles (best first)
 
 1. `He paid a GOLD BAR for ONE glass of water 💧`
-2. `Rich pelican vs POOR octopus: buying water 💧`
-3. `Same water. He paid 100x MORE 💧💀`
-
-Title 1 is closest to our 20k hit ("He traded diamonds for ONE cup of water") and states one deal. Title 2 is the versus framing from the brief, if you want to test "vs".
+2. `Same water. He paid 100x MORE 💧💀`
 
 ## Narration (send to TTS exactly as written)
 
 <!-- NARRATION START -->
-One glass of water.
-The rich pelican pays a gold bar. The poor octopus pays one coin.
-Baron Goldbelly wants it in crystal. Carried by a butler.
-Squid takes the dupe: a coconut.
-Baron orders hand-carved ice. Another gold bar.
-It melts before the first sip.
-Then Baron spots his butler filling the crystal bottle... from Squid's well.
-Squid owns the water. Squid owns both stands.
-Baron knows it's the same water.
-He orders a refill anyway. In crystal.
-Same well. Same water. Very different price for
+One glass of water. One gold bar.
+And Baron Goldbelly can't wait to pay.
+One minute ago, the same water cost one coin.
+The Baron was dying of thirst. But one coin? That's poor people water.
+He walked away.
+So Squid changed one thing. The sign.
+One gold bar. Sold!
+Crystal glass? Two gold bars. Sold!
+One ice cube? Three. Sold!
+Then Baron sees where it comes from. A puddle. Crabs drink there. For free.
+He storms back, furious.
+Squid whispers: free water is for poor people.
+So the richest pelican on the island proudly pays again, for
 <!-- NARRATION END -->
 
-**LOOP JOIN:** last line "Same well. Same water. Very different price for" → first line "One glass of water."
-Read across the join: "Very different price for one glass of water. The rich pelican pays a gold bar. The poor octopus pays one coin."
+**LOOP JOIN:** last line "…proudly pays again, for" → first line "One glass of water. One gold bar."
 
-- TTS: "for" stays up and unfinished; cut right after it, silence under 0.15 s.
-- Visual join: last frame = first frame. Macro on one glass of water on the split line, gold bar coming down on the left, coin on the right.
-- Three gags: crystal + butler / ice swan / refill. The reveal sits between gag 2 and gag 3 so the sigma moment comes earlier and the last gag becomes the character punchline: Baron knows and still pays.
+- TTS: "for" stays up and unfinished; cut right after it, silence under 0.15 s. "Sold!" three times with rising energy.
+- Visual join: last frame = frame 1.
 
-**Word count:** 87 words · **Estimated length:** about 35 s (33.5 s speech at 2.6 words/s plus about 1.6 s of holds)
+**Word count:** 97 · **Estimated length:** about 37 s. If the voice runs over 38.5 s, cut the line "He walked away." (the picture shows it).
 
-## Beat map
+## Frame 1 (also the last frame)
 
-| Beat | Time | What |
-|------|------|------|
-| Hook + sigma teaser | 0.0–6.5 | One glass, gold bar vs one coin; Squid's coin lands in his own jar and his lenses glint |
-| Sigma moment (the only one) | 22.3–26.4 | "Squid owns the water. Squid owns both stands." |
-| Punchline + bass drop | 28.7–32.0 | "He orders a refill anyway. In crystal." |
-| Loop | 32.0–35.1 | Split screen snaps back |
+One clear glass of bright blue water in the top third, the bold tag "1 GOLD BAR" at 40–45 % height, Baron's gasp face (eyes wide, monocle popping) lower left, one shiny gold bar in his wing lower right. Calm bright background. In the first 2.5 s the gasp flips to greedy delight (gold bars in his eyes) and the bar slams on the counter.
 
-## Shot list (12 shots, 35.1 s)
+## Shot list (12 shots, about 37 s; final timing from the real word timestamps)
 
-| # | Time | Dur | Camera | Action and expressions | Narration | Key SFX |
-|---|------|-----|--------|------------------------|-----------|---------|
-| 1 | 0.0–1.5 | 1.5 | Hook cut in on a macro crash zoom of one glass of water, then snap out to a split screen | One glass sweating in the sun, dead centre on the split line | "One glass of water." | Droplet "bloop", short sub hit |
-| 2 | 1.5–6.5 | 5.0 | Split screen, both halves push in together; labels "RICH" and "POOR" slam in | Left: Baron slams a gold bar on a marble counter, smug, monocle glint. Right: Squid flicks one coin onto a wooden plank, neutral. **Sigma teaser:** the coin bounces into a jar on Squid's own side; 0.4 s blue glint on his sunglasses | "The rich pelican pays a gold bar. The poor octopus pays one coin." | Heavy gold "clonk", tiny coin "tink" into glass |
-| 3 | 6.5–10.4 | 3.9 | Whip pan left into Baron's half; low tracking shot along a red carpet | Rico as butler (bow tie, gloves, sweating) carries a crystal glass on a silver tray. Baron on a deck chair, pinky out, top hat tilted, entitled | "Baron Goldbelly wants it in crystal. Carried by a butler." | Whoosh 1, harpsichord sting, crystal "ting", hurried little footsteps |
-| 4 | 10.4–12.7 | 2.3 | Whip pan right to Squid, static | Squid stabs a straw into a coconut. A caption arrow labels it "DUPE". Blank face, slow sip | "Squid takes the dupe: a coconut." | Straw "pok" (harpsichord cuts off, one ukulele note) |
-| 5 | 12.7–15.4 | 2.7 | Whip pan left, orbit around an ice block | Rico chisels a block into a tiny ice swan with frantic taps. Baron hands over a second gold bar without looking, bored. Swan goes into the glass | "Baron orders hand-carved ice. Another gold bar." | Chisel taps, gold "clonk" 2, "plip" |
-| 6 | 15.4–17.7 | 2.3 | Fast push-in on the glass with a sun flare | The swan melts into a sad puddle in one second, just as Baron lifts the glass. Smug drops to offence; the monocle slips into the glass | "It melts before the first sip." | Sizzle, descending "wah", monocle "plop" |
-| 7 | 17.7–22.3 | 4.6 | Follow Baron's eyeline: slow pan past the split line; the split screen dissolves into one continuous beach | Baron fishes out his monocle and squints through it. Rico tiptoes behind the stand and fills the crystal bottle with a bucket from an ordinary stone well. The bucket hangs on THE rope from Part 1, "EVERYTHING" tag still attached. Sign: "SQUID'S WELL" | "Then Baron spots his butler filling the crystal bottle... from Squid's well." | Music thins to one suspense note, bucket splash |
-| 8 | 22.3–26.4 | 4.1 | **SIGMA MOMENT.** Camera rises and pulls back: the marble stand and the wooden stand are one building with two fronts; then push-in on Squid | The "POOR" label over Squid flips to "OWNER". Rico hands him both gold bars. Squid raises the coconut in a slow toast; the straw nudges his sunglasses down, eyes glow water-blue, tiny smirk (mouth moves only here). The "DUPE" arrow swings from the coconut to the crystal glass. 1 s hold | "Squid owns the water. Squid owns both stands." | 0.3 s silence, phonk hit (kit/phonk/phonk-3.mp3), gold bars stacking |
-| 9 | 26.4–28.7 | 2.3 | Orbit from Squid to Baron | Baron looks at the well, at his glass, at the well. Slow blink. A tiny lightbulb appears over his top hat | "Baron knows it's the same water." | Soft "ding" (lightbulb), drip echo |
-| 10 | 28.7–32.0 | 3.3 | **PUNCHLINE.** Snap push-in on Baron's wing, tilt up to his face | The lightbulb fizzles out. Baron snaps his wingtips, pinky out, and holds up the empty crystal glass. A third gold bar leaves the sack. Rico shrugs at the camera and goes to the well. 0.6 s hold | "He orders a refill anyway. In crystal." | Bulb fizzle, finger snap, **bass drop** (kit/phonk/phonk-2.mp3) on "crystal", gold "clonk" 3 |
-| 11 | 32.0–33.5 | 1.5 | Pull back wide: well in the centre, both stands left and right, yacht in the lagoon | Rico hauls the bucket up, Squid counts three bars, Baron sips with his eyes closed, content | "Same well. Same water." | Bucket creak, satisfied posh "aah" |
-| 12 | 33.5–35.1 | 1.6 | Whip pan that re-forms the split screen and crash-zooms to the glass; matches frame 1 | The split line slams back. Gold bar in the air on the left, coin in the air on the right, glass in the centre. Final frame identical to frame 1 | "Very different price for" | Whoosh 2; the "bloop" lands on the loop point |
+| # | Time | Camera | Action and expressions | Narration | Key SFX |
+|---|------|--------|------------------------|-----------|---------|
+| 1 | 0.0–2.6 | Frame 1, slow push-in on the tag | Glass, tag "1 GOLD BAR", Baron gasps | "One glass of water. One gold bar." | Droplet "bloop", sub hit |
+| 2 | 2.6–5.2 | Snap tilt down to the counter | Gasp turns into delight, he slams the bar down. **Sigma teaser:** 0.4 s ice-blue glint on Squid's lenses as the bar lands | "And Baron Goldbelly can't wait to pay." | Heavy gold "clonk" |
+| 3 | 5.2–8.4 | Rewind effect (picture runs backwards 0.5 s), same framing as frame 1 | The same tag now reads "1 COIN" (same bold tag, other side). Same glass | "One minute ago, the same water cost one coin." | Whoosh 1 (tape rewind), coin "tink" |
+| 4 | 8.4–13.4 | Low tracking shot along the sand, then stop at the stand | Baron crawls in, tongue out, sweating, reaches for the glass. Sees "1 COIN". Disgust, beak up. He turns and walks off; in the background he collapses after three steps | "The Baron was dying of thirst. But one coin? That's poor people water. He walked away." | Desert wind, dry cough, snooty "hmpf", body "flop" |
+| 5 | 13.4–16.8 | **SIGMA MOMENT.** Slow-motion half orbit around the tag while it turns | Squid turns the tag with one tentacle, without looking. Sunglasses slide down, eyes glow ice-blue, tiny smirk. Tag lands on "1 GOLD BAR". 0.8 s hold | "So Squid changed one thing. The sign." | 0.3 s silence, phonk hit (phonk-3), tag "clack" |
+| 6 | 16.8–18.6 | Whip to Baron, crash zoom | Baron shoots back in with a dust trail, slams bar 1. Counter overlay "1" | "One gold bar. Sold!" | Whoosh 2, gold "clonk" 1, cash register "ka-ching" |
+| 7 | 18.6–21.4 | Punch-in on the counter | Squid pours the same water into a crystal glass. Two bars slam. Counter "3" | "Crystal glass? Two gold bars. Sold!" | Crystal "ting", "clonk" ×2, "ka-ching" |
+| 8 | 21.4–23.8 | Macro on the glass, then tilt up to Baron | One ice cube drops in with tiny tongs. Three bars slam, Squid's pile is now six. Baron sips, pinky out, eyes closed | "One ice cube? Three. Sold!" | "plip", "clonk" ×3, "ka-ching", posh "aah" |
+| 9 | 23.8–29.0 | Follow Baron's eyeline: pan behind the stand, push-in on the puddle | Squid fills the bottle with a bucket from a muddy puddle. Three crabs slurp from it. Small sign "FREE". Baron spit-takes | "Then Baron sees where it comes from. A puddle. Crabs drink there. For free." | Music thins to one note, slurping, spit-take spray |
+| 10 | 29.0–30.8 | Handheld shake, fast track back to the counter | Baron stomps back, steam from his hat, slams his wing on the counter | "He storms back, furious." | Stomps, kettle whistle |
+| 11 | 30.8–34.2 | **PUNCHLINE.** Slow push-in on both faces | Squid leans in and whispers behind one tentacle. Baron freezes, looks at the crabs, looks at his crystal glass. Rage melts into posh pride. 0.5 s hold | "Squid whispers: free water is for poor people." | Whisper swell, **bass drop** (phonk-2) on "poor people" |
+| 12 | 34.2–37.0 | Whip up to the glass and the tag, lands on frame 1 | Baron lifts his chin, pulls a new gold bar out of the sack, sees the tag and gasps. Final frame identical to frame 1 | "So the richest pelican on the island proudly pays again, for" | Whoosh 3; the "bloop" lands on the loop point |
 
-## Facial-expression timeline (reaction on the word, no lip sync)
+## Expressions (reaction on the word, no lip sync)
 
-| Word (time) | Character | Expression |
-|-------------|-----------|------------|
-| "gold bar" (3.3) | Baron | Smug, chin up, monocle glint |
-| "one coin" (5.8) | Squid | Blank, lens glint |
-| "crystal" (8.2) | Baron | Entitled, eyes half closed, pinky out |
-| "butler" (9.8) | Rico | Stressed, sweating, forced polite smile |
-| "dupe" (11.4) | Squid | Blank, slow sip; Baron (edge of frame): disgusted side-eye |
-| "ice" (14.0) | Baron | Bored, not even looking; Rico: tongue out in concentration |
-| "melts" (15.8) | Baron | Offended, beak open, monocle drops |
-| "spots" (18.5) | Baron | Squint through the wet monocle |
-| "Squid's well" (21.5) | Baron | Beak falls open; Rico: caught, frozen mid-pour, guilty grin |
-| "owns" (23.2) | Squid | Sunglasses nudged down, blue glow, small smirk (only mouth movement in the video) |
-| "both stands" (25.0) | Baron | Head swivels between the two fronts, stunned |
-| "knows" (27.0) | Baron | Slow blink, almost a thought |
-| "anyway" (30.0) | Baron | Thought gone: posh, pleased with himself |
-| "crystal" (31.2) | Rico | Deadpan shrug to camera; Squid: flat |
-| "Same water" (33.0) | Baron | Blissful sip, eyes closed |
-| "for" (35.0) | Baron / Squid | Smug / blank (matches frame 1) |
+Baron: gasp (0.0) → gold-bar eyes on "can't wait" → dying of thirst on "thirst" → disgust on "one coin" → nose up on "walked away" → delight on every "Sold!" (bigger each time) → blissful sip → spit-take on "puddle" → rage on "furious" → frozen on "whispers" → posh pride on "poor people" → gasp on "for".
+Squid: blank the whole time; sunglasses down and smirk only in shot 5; small nod on each "Sold!".
+Crabs: happy slurping, one waves at the Baron.
 
 ## Szene/Set
 
-- **3D set:** one building with two fronts on the beach: marble "AQUA DE LUXE" front on the left, driftwood "COCONUTS" front on the right, a stone well behind and between them. Shot so that the first 17 s never show the shared back wall.
-- **Foreground:** the glass on the split line, marble counter with gold bars (left), wooden plank with a coin jar (right), red carpet edge.
-- **Middle:** Baron's deck chair, Rico with silver tray and ice block, Squid under a palm leaf with coconuts, both stand fronts.
-- **Background:** the well with bucket on the Part 1 rope ("EVERYTHING" tag), lagoon with the yacht flying a squid flag (callback), palms, clear sky.
-- **Props:** crystal glass and bottle, silver tray, ice block + chisel + ice swan, 3 gold bars, coconut with straw, coin jar, labels RICH / POOR / OWNER and the DUPE arrow (post overlay), lightbulb (post overlay), monocle on its chain.
-- **Lighting:** left half cool and glossy (white marble, hard highlights), right half warm and soft (shade under the palm leaf). After the split dissolves in shot 7, one neutral warm light for the whole beach: the two worlds are literally the same place.
-- **Camera:** macro crash zoom, double push-in, whip + track, whip, whip + orbit, push-in, eyeline pan with split dissolve, rise + pull-back + push-in, orbit, snap push-in, pull back, whip + crash zoom.
+- **3D set:** one driftwood water stand on the beach (reuse the COCONUTS front of v1 without the marble half), a dune behind it that hides the puddle until shot 9.
+- **Props:** one clear glass with bright blue water and condensation, the bold flip tag ("1 COIN" / "1 GOLD BAR"), crystal glass, one ice cube with tiny tongs, six gold bars plus the Baron's sack, bucket, muddy puddle, sign "FREE", three crabs (same crab asset as To the Moon). Callback only as background: the bucket hangs on the rope with the EVERYTHING tag.
+- **Lighting:** hot midday desert light on the sand, the glass always the brightest and bluest thing in frame. Sigma shot: everything dims except the ice-blue glow.
+- **Rules from the frame 1 review apply to every shot:** subject large, no empty third, Baron crisp and saturated, captions in the top 15 % band when they would cover tag or face, silhouette doubling subtle.
 
 ## Sound-Design
 
-| Beat | SFX |
-|------|-----|
-| 0.0 hook | Droplet "bloop", short sub hit |
-| 1.5 the deal | Gold "clonk" 1, coin "tink" into the jar |
-| 6.5 butler | Whoosh 1, harpsichord sting, crystal "ting", footsteps |
-| 10.4 coconut | Straw "pok", one ukulele note |
-| 12.7 ice | Chisel taps, gold "clonk" 2, "plip" |
-| 15.4 melt | Sizzle, "wah", monocle "plop" |
-| 17.7 the well | Suspense note, bucket splash |
-| 22.3 sigma | 0.3 s silence, phonk-3 hit, bars stacking |
-| 26.4 he knows | Lightbulb "ding", drip echo |
-| 28.7 punchline | Bulb fizzle, snap, **the one bass drop** (phonk-2) on "crystal", gold "clonk" 3 |
-| 32.0 wide | Bucket creak, "aah" |
-| 33.5 loop | Whoosh 2 into the "bloop" at 0.0 |
-
-Whooshes: 2 in total (limit 4); the whip pans between the halves in shots 4 and 5 are carried by the music switch instead. One bass drop only (31.2 s). The gold "clonk" is the same sample all three times so the viewer counts the bars.
+Max 4 whooshes (3 planned: rewind, Baron's return, loop). The gold "clonk" is the same sample every time so the viewer counts six bars. One phonk hit (sigma), one bass drop (punchline). Effects stay under the voice. Mix −14 LUFS, LRA ≤ 3, synccheck.py must pass.
 
 ## Musik
 
-- **Mood:** mock-grand, "royal banquet" for Baron's half. `python3 music-free/addmusic.py IN.mp4 OUT.mp4 --mood epic` (candidate: "Prelude and Action" or "Impact Moderato", Kevin MacLeod, CC BY 4.0, from music-free/). On Squid's beats (shots 4 and the tail of 6) duck the bed by about 12 dB so only the single ukulele note is heard; any ukulele/harpsichord stings must be CC0 samples.
-- **BPM:** target about 100–115; not measured from the file. Check the tempo and place the three gold "clonks" on beats.
-- **Drop point:** music mutes at 22.0 s, phonk-3 covers 22.3–26.4, bed returns quietly at 26.4. Second mute 0.2 s before the bass drop at 31.2 s. Bed runs through the loop point at constant level.
-- **Licence:** MacLeod (CC BY 4.0, credit line in the description) or CC0 only. Phonk hits are our own (kit/phonk).
+- **Mood:** mock-grand "royal banquet" bed (candidates as in v1: "Prelude and Action" or "Impact Moderato", Kevin MacLeod, CC BY 4.0, or a CC0 track from ~/musik-bibliothek). Faster and punchier from shot 6 (the three "Sold!").
+- **Drop points:** music mutes 0.3 s before the sigma hit (about 13.1 s) and 0.2 s before the bass drop (about 33.0 s). Bed runs through the loop point at constant level.
 
 ## Description
 
-The rich pelican paid a gold bar for one glass of water. The poor octopus paid one coin.
-Same well. Same water. Guess who owns it. 💧
+Would YOU pay more than one coin for a glass of water? Yes or no. 💧
 
-Crystal glass or coconut: how are YOU drinking?
+The richest pelican on the island refused water for one coin. Then the octopus changed the sign.
 
 [CREDIT line printed by addmusic.py]
 #shorts #coinisland #money
 
 ## Thumbnail frame
 
-Shot 2 at about 3 s: hard vertical split. Left (marble, gold): Baron, pinky out, crystal glass, a gold bar on the counter, tiny Rico behind him with a silver tray. Right (wood, sand): Squid, sunglasses, coconut with a straw, one coin. Labels "RICH" top left, "POOR" top right. The water level in the glass and in the coconut is clearly identical.
+Frame 1 after the review fixes: glass, tag "1 GOLD BAR", Baron's gasp face, gold bar in his wing.
